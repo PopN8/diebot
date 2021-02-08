@@ -1,5 +1,5 @@
-from base import Base, session_scope, engine
-from models import Adventurer, Item, Objective, Location
+from db.base import Base, session_scope, engine
+from db.models import Adventurer, Item, Objective, Location
 
 def update_schemes():
     Base.metadata.create_all(engine)
@@ -49,6 +49,11 @@ def remove_item(adventurer_uid, item_name, count):
 def add_objective(name, description):
     with session_scope() as Session:
         Session.add(Objective(name, description))
+
+def get_objective_by_id(objective_id):
+    with session_scope() as Session:
+        objective = Session.query(Objective).get(objective_id)
+    return objective
 
 def get_current_objectives():
     with session_scope() as Session:

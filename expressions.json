@@ -1,0 +1,26 @@
+{
+    "You {} the dice {}.": [
+        [
+            "yeet",
+            "gently roll"
+        ],
+        [
+            "across the room",
+            "into an active volcano"
+        ]
+    ],
+    "You {}, {}, then {} the dice.": [
+        [
+            "wind up",
+            "close your eyes"
+        ],
+        [
+            "line up your shot",
+            "pray to the gods"
+        ],
+        [
+            "tenderly launch",
+            "whistfully imagine"
+        ]
+    ]
+}

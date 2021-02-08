@@ -1,5 +1,5 @@
-from base import Base
-from json_encode import JSONEncodedType
+from db.base import Base
+from db.json_encode import JSONEncodedType
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, Boolean, Sequence, ForeignKey
