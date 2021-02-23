@@ -5,10 +5,11 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, Boolean, Sequence, ForeignKey
 from typing import List
 
+"""RP section"""
 class Objective(Base):
     __tablename__ = 'objective'
 
-    id = Column(Integer, Sequence('objective_id_seq'), primary_key=True)
+    objective_id = Column(Integer, Sequence('objective_id_seq'), primary_key=True)
     name = Column(String)
     description = Column(String)
     is_solved = Column(Boolean, default=False)
@@ -23,7 +24,7 @@ class Objective(Base):
 class Location(Base):
     __tablename__ = 'location'
 
-    id = Column(Integer, Sequence('location_id_seq'), primary_key=True)
+    location_id = Column(Integer, Sequence('location_id_seq'), primary_key=True)
     place = Column(String)
 
     def __init__(self, place):
@@ -35,7 +36,7 @@ class Location(Base):
 class Item(Base):
     __tablename__ = 'item'
 
-    id = Column(Integer, Sequence('item_id_seq'), primary_key=True)
+    item_id = Column(Integer, Sequence('item_id_seq'), primary_key=True)
     name = Column(String)
     description = Column(String)
     count = Column(Integer)
@@ -56,7 +57,6 @@ class Adventurer(Base):
 
     uid = Column(String, primary_key=True)
     name = Column(String)
-    #item_id = Column(Integer, ForeignKey('item.id'))
     inventory = relationship('Item', lazy='joined')
 
     def __init__(self, uid, name, inventory:List[Item]=[]):
@@ -66,3 +66,51 @@ class Adventurer(Base):
 
     def __repr__(self):
         return f"<Adventurer(uid={self.uid}, name={self.name}, inventory={self.inventory})>"
+
+
+
+"""Suggestion section"""
+class PChoice(Base):
+    __tablename__ = 'pchoice'
+
+    choice_id = Column(Integer, Sequence('pchoice_id_seq'), primary_key=True)
+    choice = Column(String)
+    approved = Column(Boolean)
+    expression_id = Column(Integer, ForeignKey('pexpression.expression_id'))
+
+    def __init__(self, choice, approved=False):
+        self.choice = choice
+        self.approved = approved
+
+    def __repr__(self):
+        return f"<PChoice(choice={self.choice})>"
+
+class PExpression(Base):
+    __tablename__ = 'pexpression'
+
+    expression_id = Column(Integer, Sequence('pexpression_id_seq'), primary_key=True)
+    choices = relationship('PChoice', lazy='joined')
+    prompt_id = Column(Integer, ForeignKey('prompt.prompt_id'))
+
+    def __init__(self, choices:List[PChoice]=[]):
+        self.choices = choices
+
+    def __repr__(self):
+        return f"<PExpression(choices={self.choices})>"
+
+class Prompt(Base):
+    __tablename__ = 'prompt'
+
+    prompt_id = Column(Integer, Sequence('prompt_id_seq'), primary_key=True)
+    prompt = Column(String)
+    expressions = relationship('PExpression', lazy='joined')
+    approved = Column(Boolean)
+
+    def __init__(self, max_index, prompt, expressions:List[PExpression]=[], approved=False):
+        self.max_index = max_index
+        self.prompt = prompt
+        self.expressions = expressions
+        self.approved = approved
+
+    def __repr__(self):
+        return f"<Prompt(id={self.prompt_id}, prompt={self.prompt}, expressions={self.expressions})>"

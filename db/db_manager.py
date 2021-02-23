@@ -1,5 +1,6 @@
 from db.base import Base, session_scope, engine
-from db.models import Adventurer, Item, Objective, Location
+from db.db_exceptions import PromptIndexError
+from db.models import Adventurer, Item, Objective, Location, Prompt, PExpression, PChoice
 
 def update_schemes():
     Base.metadata.create_all(engine)
@@ -8,6 +9,7 @@ def clear_db():
     Base.metadata.drop_all(engine)
 
 
+"""RP section"""
 def add_adventurer(uid, name):
     with session_scope() as Session:
         Session.add(Adventurer(uid, name))
@@ -72,5 +74,40 @@ def add_location(place):
 
 def get_current_location():
     with session_scope() as Session:
-        location = Session.query(Location).order_by(Location.id.desc()).first()
+        location = Session.query(Location).order_by(Location.location_id.desc()).first()
     return location
+
+
+"""Suggestion section"""
+def add_prompt(max_index, prompt):
+    with session_scope() as Session:
+        Session.add(Prompt(max_index, prompt))
+
+def get_prompt(prompt_id):
+    with session_scope() as Session:
+        prompt = Session.query(Prompt).get(prompt_id)
+    return prompt
+
+def get_all_prompts():
+    with session_scope() as Session:
+        prompts = Session.query(Prompt).all()
+    return prompts
+
+def get_accepted_prompts():
+    with session_scope() as Session:
+        prompts = Session.query(Prompt).filter_by(approved=True).all()
+    return prompts
+
+def get_pending_prompts():
+    with session_scope() as Session:
+        prompts = Session.query(Prompt).filter_by(approved=False).all()
+    return prompts
+
+
+def add_choice(prompt_id, index, choice):
+    with session_scope() as Session:
+        prompt = Session.query(Prompt).get(prompt_id)
+        if 0 <= index <= prompt.max_index:
+            prompt.expressions[index].append(PChoice(choice))
+        else:
+            raise PromptIndexError(index, prompt.max_index)
