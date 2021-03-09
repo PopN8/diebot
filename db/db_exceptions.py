@@ -1,6 +1,6 @@
 class PromptIndexError(Exception):
     """Raised when prompt index is incorrect"""
-    
+
     def __init__(self, index, max_index):
         self.index = index
         self.valid_i = list(range(max_index))

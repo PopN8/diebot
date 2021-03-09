@@ -108,6 +108,6 @@ def add_choice(prompt_id, index, choice):
     with session_scope() as Session:
         prompt = Session.query(Prompt).get(prompt_id)
         if 0 <= index <= prompt.max_index:
-            prompt.expressions[index].append(PChoice(choice))
+            prompt.expressions[index].choices.append(PChoice(choice))
         else:
             raise PromptIndexError(index, prompt.max_index)

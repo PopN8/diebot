@@ -102,14 +102,15 @@ class Prompt(Base):
     __tablename__ = 'prompt'
 
     prompt_id = Column(Integer, Sequence('prompt_id_seq'), primary_key=True)
+    max_index = Column(Integer)
     prompt = Column(String)
     expressions = relationship('PExpression', lazy='joined')
     approved = Column(Boolean)
 
-    def __init__(self, max_index, prompt, expressions:List[PExpression]=[], approved=False):
+    def __init__(self, max_index, prompt, approved=False):
         self.max_index = max_index
         self.prompt = prompt
-        self.expressions = expressions
+        self.expressions = [PExpression() for _ in range(max_index + 1)]
         self.approved = approved
 
     def __repr__(self):

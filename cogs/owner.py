@@ -49,6 +49,7 @@ class Owner(commands.Cog):
             except Exception as e:
                 await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
             else:
+                print(f'Cog {cog} reloaded')
                 await ctx.send('**`SUCCESS`**')
 
 
